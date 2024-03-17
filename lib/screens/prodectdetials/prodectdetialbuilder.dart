@@ -5,22 +5,29 @@ import 'package:slashtask/model/productdetails.dart';
 import 'package:slashtask/screens/home/widgets/productbrandname.dart';
 
 class prodectdetials extends StatefulWidget {
-  const prodectdetials({super.key, required this.data, required this.hascolor, required this.hassize});
+  const prodectdetials({super.key, required this.data, required this.hascolor, required this.hassize, required this.size, required this.color, required this.matrial, required this.hasmatrial, });
   final  List<Data> data;
   final bool hascolor;
   final bool hassize;
+  final bool hasmatrial;
+  final String size;
+  final String color;
+  final String matrial;
+
   @override
   State<prodectdetials> createState() => _prodectdetialsState();
 }
 
 class _prodectdetialsState extends State<prodectdetials> {
   late PageController pageController;
+  //Future<List<ProductVarientImage>> images=[] as Future<List<ProductVarientImage>>;
   int selectedColor = 0;
    int selectsize=0;
    int selectcolor=0;
   int selectmaterial=0;
   //bool hascolorr=false;
   bool hassizee=false;
+  //String color=widget.color.replaceAll('#', '');
   List<bool> _isExpandedList = [false];
 
 
@@ -86,7 +93,7 @@ class _prodectdetialsState extends State<prodectdetials> {
                                 }
                                 return Transform.rotate(
                                   angle: 2*3.14 * value,
-                                  child: cards(context,size,widget.data[0].variations![0].productVarientImages![0].imagePath.toString()),
+                                  child: cards(context,size,widget.data[0].variations![0].productVarientImages![int].imagePath.toString()),
                                 );
                               },
                             );
@@ -94,13 +101,22 @@ class _prodectdetialsState extends State<prodectdetials> {
                         ),
                       ),
                       //SizedBox(height: 4,),
-                      SizedBox(
-                        //width: size.width * 0.48,
-                          height: size.height * 0.07,
-                          child: Row(mainAxisAlignment:MainAxisAlignment.center
-                            ,children: [cardbody(context, size,widget.data[0].variations![0].productVarientImages![0].imagePath.toString())
-                              ,const SizedBox(width: 8,),
-                              cardbody(context, size,widget.data[0].variations![0].productVarientImages![0].imagePath.toString())],)),
+                      Center(
+                        child: SizedBox(
+                          //width: size.width * 0.48,
+                            height: size.height * 0.07,
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              scrollDirection: Axis.horizontal,
+                              itemCount:widget.data[0].variations![0].productVarientImages?.length ,
+                              itemBuilder: (context,index)
+                              {return Padding(
+                                padding: const EdgeInsets.only(left: 8.0),
+                                child: cardbody(context,
+                                    size,widget.data[0].variations![0].productVarientImages![index].imagePath.toString()),
+                              );}
+                              ,)),
+                      ),
                       const SizedBox(height: 15,),
                        Row(mainAxisAlignment:MainAxisAlignment.spaceBetween,
                         children: [Padding(
@@ -144,7 +160,7 @@ class _prodectdetialsState extends State<prodectdetials> {
                                               offset: const Offset(0, 0),
                                             ),
                                           ],
-                                          shape: BoxShape.circle,color:Color(widget.data[0].avaiableProperties![2].values![0].value.hashCode),
+                                          shape: BoxShape.circle,color:Color(widget.color.hashCode),
                                           border: Border.all(style: BorderStyle.solid,
                                               color: (selectedColor ==index)?Colors.white!:Colors.transparent
                                               ,width: 1)),)),
@@ -167,7 +183,7 @@ class _prodectdetialsState extends State<prodectdetials> {
                             child: ListView.builder(
                                 shrinkWrap: true,
                                 scrollDirection: Axis.horizontal,
-                                itemCount: widget.data[0].variations![0].productPropertiesValues.length,
+                                itemCount: 1,
                                 itemBuilder:(context, index) {
                                   return  Padding(
                                     padding: const EdgeInsets.all(3.0),
@@ -178,7 +194,7 @@ class _prodectdetialsState extends State<prodectdetials> {
                                         child: Container(
 
                                           padding: const EdgeInsets.only(top: 12,right: 4,left: 4),
-                                          child: Text('50x500',textAlign: TextAlign.center,style: TextStyle(color:(selectsize ==index)?const Color(
+                                          child: Text(widget.size,textAlign: TextAlign.center,style: TextStyle(color:(selectsize ==index)?const Color(
                                               0xff0c0c0c):const Color(
                                               0xffffffff),fontSize: 20,fontWeight: FontWeight.bold),),
                                           //width:75,
@@ -193,45 +209,47 @@ class _prodectdetialsState extends State<prodectdetials> {
                                 }),
                           ),
                         ),],):SizedBox(height: 2,),
-                      Padding(
+                      widget.hasmatrial?Column(children: [
+                          Padding(
                         padding:  EdgeInsets.only(top: 12.0,right: size.width*0.63),
                         child: const Text('Select material',
                           style: TextStyle(fontSize: 18,fontFamily: 'mulish',
                               color: Colors.white,fontWeight: FontWeight.bold),),
                       ),const SizedBox(height: 15,),
-                      SizedBox(
-                        width: size.width ,
-                        height: size.height * 0.06,
-                        child: Center(
-                          child: ListView.builder(
-                              shrinkWrap: true,
-                              scrollDirection: Axis.horizontal,
-                              itemCount: 3,
-                              itemBuilder:(context, index) {
-                                return  Padding(
-                                  padding: const EdgeInsets.all(3.0),
-                                  child: GestureDetector(
-                                      onTap: (){setState(() {
-                                        selectmaterial = index;
-                                      });},
-                                      child: Container(
+                        SizedBox(
+                          width: size.width ,
+                          height: size.height * 0.06,
+                          child: Center(
+                            child: ListView.builder(
+                                shrinkWrap: true,
+                                scrollDirection: Axis.horizontal,
+                                itemCount: 1,
+                                itemBuilder:(context, index) {
+                                  return  Padding(
+                                    padding: const EdgeInsets.all(3.0),
+                                    child: GestureDetector(
+                                        onTap: (){setState(() {
+                                          selectmaterial = index;
+                                        });},
+                                        child: Container(
 
-                                        padding: const EdgeInsets.only(top: 12,right: 4,left: 4),
-                                        child: Text('Silk Satin',textAlign: TextAlign.center,style: TextStyle(color:(selectmaterial ==index)?const Color(
-                                            0xff0c0c0c):const Color(
-                                            0xffffffff),fontSize: 20,fontWeight: FontWeight.bold),),
-                                        //width:75,
-                                        decoration:BoxDecoration(
-                                          borderRadius: BorderRadius.circular(11),
-                                          shape: BoxShape.rectangle,
-                                          color:(selectmaterial ==index)?const Color(
-                                              0xffb7ed2e):const Color(
-                                              0xff1d1d1f),
-                                        ),)),
-                                );
-                              }),
-                        ),
-                      ),
+                                          padding: const EdgeInsets.only(top: 12,right: 4,left: 4),
+                                          child: Text(widget.matrial,textAlign: TextAlign.center,style: TextStyle(color:(selectmaterial ==index)?const Color(
+                                              0xff0c0c0c):const Color(
+                                              0xffffffff),fontSize: 20,fontWeight: FontWeight.bold),),
+                                          //width:75,
+                                          decoration:BoxDecoration(
+                                            borderRadius: BorderRadius.circular(11),
+                                            shape: BoxShape.rectangle,
+                                            color:(selectmaterial ==index)?const Color(
+                                                0xffb7ed2e):const Color(
+                                                0xff1d1d1f),
+                                          ),)),
+                                  );
+                                }),
+                          ),
+                        )],):SizedBox(height:2 ,)
+                    ,
                       const SizedBox(height: 15,),
                       SizedBox(
                         width: size.width,
