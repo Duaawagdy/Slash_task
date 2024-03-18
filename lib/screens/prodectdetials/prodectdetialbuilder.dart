@@ -5,15 +5,17 @@ import 'package:slashtask/model/productdetails.dart';
 import 'package:slashtask/screens/home/widgets/productbrandname.dart';
 
 class prodectdetials extends StatefulWidget {
-  const prodectdetials({super.key, required this.data, required this.hascolor, required this.hassize, required this.size, required this.color, required this.matrial, required this.hasmatrial, });
-  final  List<Data> data;
+   prodectdetials({super.key,  required this.data, required this.hascolor, required this.hassize, required this.size, required this.color, required this.matrial, required this.hasmatrial, required this.colorindex, required this.sizeindex, required this.matrialindex, });
+    ProductDetails data;
   final bool hascolor;
   final bool hassize;
   final bool hasmatrial;
-  final String size;
-  final String color;
-  final String matrial;
-
+  final int size;
+  final int color;
+  final int matrial;
+   final int colorindex;
+   final int sizeindex;
+   final int matrialindex;
   @override
   State<prodectdetials> createState() => _prodectdetialsState();
 }
@@ -25,6 +27,8 @@ class _prodectdetialsState extends State<prodectdetials> {
    int selectsize=0;
    int selectcolor=0;
   int selectmaterial=0;
+  int idex=0;
+  int id=0;
   //bool hascolorr=false;
   bool hassizee=false;
   //String color=widget.color.replaceAll('#', '');
@@ -43,6 +47,17 @@ class _prodectdetialsState extends State<prodectdetials> {
   void dispose() {
     pageController.dispose();
     super.dispose();
+  }
+  int getindex(int id ){
+
+    List<Variation>? dataList=widget.data.variations;
+    for(int i=0;i<dataList!.length;i++){
+      if(dataList[i].id==id){
+        idex=i;
+        return i;
+      }
+    }
+    return -1;
   }
 
   @override
@@ -79,7 +94,7 @@ class _prodectdetialsState extends State<prodectdetials> {
                         width: size.width,
                         height: size.height * 0.4,
                         child: PageView.builder(
-                          itemCount: widget.data[0].variations![0].productVarientImages?.length,
+                          itemCount: widget.data.variations![idex].productVarientImages?.length,
                           physics: const BouncingScrollPhysics(),
                           controller: pageController,
                           itemBuilder: (context, int) {
@@ -92,8 +107,8 @@ class _prodectdetialsState extends State<prodectdetials> {
                                   value = (value * 0.04).clamp(-1, 1);
                                 }
                                 return Transform.rotate(
-                                  angle: 2*3.14 * value,
-                                  child: cards(context,size,widget.data[0].variations![0].productVarientImages![int].imagePath.toString()),
+                                  angle: 3.14 * value,
+                                  child: cards(context,size,widget.data.variations![idex].productVarientImages![int].imagePath.toString()),
                                 );
                               },
                             );
@@ -103,17 +118,20 @@ class _prodectdetialsState extends State<prodectdetials> {
                       //SizedBox(height: 4,),
                       Center(
                         child: SizedBox(
-                          //width: size.width * 0.48,
+
                             height: size.height * 0.07,
+                            //width: size.width,
                             child: ListView.builder(
                               shrinkWrap: true,
                               scrollDirection: Axis.horizontal,
-                              itemCount:widget.data[0].variations![0].productVarientImages?.length ,
+                              itemCount:widget.data.variations![idex].productVarientImages?.length ,
                               itemBuilder: (context,index)
                               {return Padding(
                                 padding: const EdgeInsets.only(left: 8.0),
-                                child: cardbody(context,
-                                    size,widget.data[0].variations![0].productVarientImages![index].imagePath.toString()),
+                                child: GestureDetector(
+                                  child: cardbody(context,
+                                      size,widget.data.variations![idex].productVarientImages![index].imagePath.toString()),
+                                ),
                               );}
                               ,)),
                       ),
@@ -121,19 +139,26 @@ class _prodectdetialsState extends State<prodectdetials> {
                        Row(mainAxisAlignment:MainAxisAlignment.spaceBetween,
                         children: [Padding(
                           padding: EdgeInsets.all(12.0),
-                          child: productname(fontsize: 26, productnametext: widget.data[0].name.toString(),),
+                          child: Wrap(
+                            children: [
+                              Container(
+                                width: size.width*0.5,
+                                child: productname(fontsize: 26, productnametext: widget.data.name.toString(),),
+                              ),
+                            ],
+                          ),
                         ),Padding(
                           padding: EdgeInsets.all(12.0),
-                          child: brandlogo(width: 40,height: 40, imagepath: widget.data[0].brandImage.toString(),),
+                          child: brandlogo(width: 40,height: 40, imagepath: widget.data.brandImage.toString(),),
                         )],),
                        Row(
                         mainAxisAlignment:MainAxisAlignment.spaceBetween,
                         children: [Padding(
                           padding: EdgeInsets.all(2.0),
-                          child: price(fonntsize: 15, pricetext: 'EGP ${widget.data[0].variations![0].price.toString()}',),
+                          child: price(fonntsize: 15, pricetext: 'EGP ${widget.data.variations![idex].price.toString()}',),
                         ),Padding(
                           padding: EdgeInsets.all(12.0),
-                          child: brandname(fonntsize: 28, brandnametext: widget.data[0].brandName.toString(),),
+                          child: brandname(fonntsize: 28, brandnametext: widget.data.brandName.toString(),),
                         )],),
                       const SizedBox(height: 15,),
                       widget.hascolor?SizedBox(
@@ -143,13 +168,16 @@ class _prodectdetialsState extends State<prodectdetials> {
                           child: ListView.builder(
                               shrinkWrap: true,
                               scrollDirection: Axis.horizontal,
-                              itemCount: 1,
+                              itemCount: widget.color,
                               itemBuilder:(context, index) {
                                 return  Padding(
                                   padding: const EdgeInsets.all(4.0),
                                   child: GestureDetector(
                                       onTap: (){setState(() {
                                         selectedColor = index;
+                                        id=widget.data.availableProperties[widget.colorindex].values[index].id!;
+                                        getindex(id);
+                                        print(id);
                                       });},
                                       child: Container(height: 25,width:25,decoration:BoxDecoration(
                                           boxShadow:  [
@@ -160,7 +188,7 @@ class _prodectdetialsState extends State<prodectdetials> {
                                               offset: const Offset(0, 0),
                                             ),
                                           ],
-                                          shape: BoxShape.circle,color:Color(widget.color.hashCode),
+                                          shape: BoxShape.circle,color:hexToColor(widget.data.availableProperties[widget.colorindex].values[index].value.toString()),
                                           border: Border.all(style: BorderStyle.solid,
                                               color: (selectedColor ==index)?Colors.white!:Colors.transparent
                                               ,width: 1)),)),
@@ -183,18 +211,20 @@ class _prodectdetialsState extends State<prodectdetials> {
                             child: ListView.builder(
                                 shrinkWrap: true,
                                 scrollDirection: Axis.horizontal,
-                                itemCount: 1,
+                                itemCount:widget.size,
                                 itemBuilder:(context, index) {
                                   return  Padding(
                                     padding: const EdgeInsets.all(3.0),
                                     child: GestureDetector(
                                         onTap: (){setState(() {
                                           selectsize = index;
+                                          id=widget.data.availableProperties[widget.sizeindex].values[index].id!;
+                                          getindex(id);
                                         });},
                                         child: Container(
 
                                           padding: const EdgeInsets.only(top: 12,right: 4,left: 4),
-                                          child: Text(widget.size,textAlign: TextAlign.center,style: TextStyle(color:(selectsize ==index)?const Color(
+                                          child: Text(widget.data.availableProperties[widget.sizeindex].values[index].value.toString(),textAlign: TextAlign.center,style: TextStyle(color:(selectsize ==index)?const Color(
                                               0xff0c0c0c):const Color(
                                               0xffffffff),fontSize: 20,fontWeight: FontWeight.bold),),
                                           //width:75,
@@ -230,11 +260,13 @@ class _prodectdetialsState extends State<prodectdetials> {
                                     child: GestureDetector(
                                         onTap: (){setState(() {
                                           selectmaterial = index;
+                                          id=widget.data.availableProperties[widget.matrialindex].values[index].id!;
+                                          getindex(id);
                                         });},
                                         child: Container(
 
                                           padding: const EdgeInsets.only(top: 12,right: 4,left: 4),
-                                          child: Text(widget.matrial,textAlign: TextAlign.center,style: TextStyle(color:(selectmaterial ==index)?const Color(
+                                          child: Text(widget.data.availableProperties[widget.matrialindex].values[index].value.toString(),textAlign: TextAlign.center,style: TextStyle(color:(selectmaterial ==index)?const Color(
                                               0xff0c0c0c):const Color(
                                               0xffffffff),fontSize: 20,fontWeight: FontWeight.bold),),
                                           //width:75,
@@ -251,47 +283,55 @@ class _prodectdetialsState extends State<prodectdetials> {
                         )],):SizedBox(height:2 ,)
                     ,
                       const SizedBox(height: 15,),
-                      SizedBox(
+                      Container(padding: EdgeInsets.only(left: 4,right: 4),
+                        //decoration: BoxDecoration(borderRadius: BorderRadius.circular(15)),
                         width: size.width,
-                        height: size.longestSide,
-                        child: ListView.builder(
-                            physics: NeverScrollableScrollPhysics(),
-                            itemCount: 1,
-                            itemBuilder:(context,index){
-                              return  ExpansionPanelList(expansionCallback:(index,isopen){
-                                setState(() {
-                                  _isExpandedList[index] = !_isExpandedList[index];
-                                  //print(widget.hascolorr);
-                                });
-                              },
-                                children:
-                                [ ExpansionPanel(
-                                  isExpanded: _isExpandedList[0], // Set to true if you want it to be expanded initially
-                                  backgroundColor: const Color(0xff303030),
-                                  headerBuilder: (BuildContext context, bool isExpanded) {
-                                    return  Text(
-                                      'Description',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 18,
+                        height: size.height,
+                        child:  Column(
+                          children: [
+                            Container(
+                        decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
+                              child: ExpansionPanelList(expansionCallback:(index,isopen){
+                                      setState(() {
+                                        _isExpandedList[index] = !_isExpandedList[index];
+                                        //print(widget.hascolorr);
+                                      });
+                                    },
+                                      children:
+                                      [ ExpansionPanel(
+
+                                        isExpanded: _isExpandedList[0], // Set to true if you want it to be expanded initially
+                                        backgroundColor: const Color(0xff303030),
+                                        headerBuilder: (BuildContext context, bool isExpanded) {
+                                          return  Text(
+                                            'Description',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 18,
+                                            ),
+                                          );
+                                        },
+                                        body: Container(
+                                          //color: Colors.lightGreenAccent,
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(left: 8.0,right: 8,bottom: 6),
+                                            child: Text(
+                                              widget.data.description.toString(),
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 16,
+                                              ),
+                                            ),
+                                          ),
+                                        ),
                                       ),
-                                    );
-                                  },
-                                  body: Container(
-                                    //color: Colors.lightGreenAccent,
-                                    child: Text(
-                                      widget.data[0].description.toString(),
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 16,
-                                      ),
+                                      ],
                                     ),
-                                  ),
-                                ),
-                                ],
-                              );
-                            }
-                        ),
+                            ),
+                          ],
+                        )
+                            
+                        ,
                       ),
 
                     ],
@@ -304,6 +344,13 @@ class _prodectdetialsState extends State<prodectdetials> {
       ),
     );
   }
+
+   hexToColor(String hexColor) {
+    if(hexColor=='#000000'){return Color(0xff0c0c0c);}
+    else{
+     return new Color(int.parse(hexColor.substring(0,6), radix: 16) + 0xFF000000);
+
+  }}
 }
 
 
@@ -311,7 +358,7 @@ class _prodectdetialsState extends State<prodectdetials> {
   Widget cards(BuildContext context,Size size,String images) {
     return Center(
       child: Container(
-        width: size.width * 0.6,
+        width: size.width * 0.7,
         height: size.height * 0.35,
         child: Column(
           children: [
@@ -328,16 +375,14 @@ class _prodectdetialsState extends State<prodectdetials> {
 
   Widget cardbody(BuildContext context,Size size,String image) {
     return Container(
-      decoration: BoxDecoration(
+      foregroundDecoration: BoxDecoration(
+        image: DecorationImage(image: NetworkImage(image)),
         color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(15),
       ),
-      //width: size.width * 0.15,
-      //height: size.height * 1,
-      child: FittedBox(
-        fit: BoxFit.contain,
-        child: Image.network(image),
-      ),
+      width: size.width * 0.13,
+      height: size.height * 0.7,
+
     );
   }
 

@@ -9,7 +9,7 @@ final double fontsize;
 
   @override
   Widget build(BuildContext context) {
-    return Text('${productnametext}',softWrap: false,overflow: TextOverflow.ellipsis,style:
+    return Text('${productnametext}',softWrap: true,style:
     TextStyle(color: Colors.white,fontWeight: FontWeight.w900,fontSize: fontsize,fontFamily: 'Mulish'),);
   }
 }
@@ -23,7 +23,7 @@ class brandname extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text('${brandnametext}',softWrap: false,style:
+    return Text('${brandnametext}',softWrap: true,style:
     TextStyle(color: Colors.white,fontWeight: FontWeight.bold,fontFamily: 'Mulish'),);
   }
 }
