@@ -34,7 +34,19 @@ class _prodectdetialsState extends State<prodectdetials> {
   //String color=widget.color.replaceAll('#', '');
   List<bool> _isExpandedList = [false];
 
-
+  String? getValueById(int id) {
+    // Search for the property with the matching ID
+    for (var property in widget.data.availableProperties) {
+      List<dynamic> values = property.values;
+      for (var value in values) {
+        if (value['id'] == id) {
+          return value['value'];
+        }
+      }
+    }
+    // Return null if ID is not found
+    return null;
+  }
 
   @override
   void initState() {
@@ -107,7 +119,7 @@ class _prodectdetialsState extends State<prodectdetials> {
                                   value = (value * 0.04).clamp(-1, 1);
                                 }
                                 return Transform.rotate(
-                                  angle: 3.14 * value,
+                                  angle: 2*3.14 * value,
                                   child: cards(context,size,widget.data.variations![idex].productVarientImages![int].imagePath.toString()),
                                 );
                               },
@@ -168,7 +180,7 @@ class _prodectdetialsState extends State<prodectdetials> {
                           child: ListView.builder(
                               shrinkWrap: true,
                               scrollDirection: Axis.horizontal,
-                              itemCount: widget.color,
+                              itemCount: widget.data.variations.length,
                               itemBuilder:(context, index) {
                                 return  Padding(
                                   padding: const EdgeInsets.all(4.0),
@@ -188,7 +200,7 @@ class _prodectdetialsState extends State<prodectdetials> {
                                               offset: const Offset(0, 0),
                                             ),
                                           ],
-                                          shape: BoxShape.circle,color:hexToColor(widget.data.availableProperties[widget.colorindex].values[index].value.toString()),
+                                          shape: BoxShape.circle,color:hexToColor(widget.data.variations[index].productPropertiesValues[1].value.toString()),
                                           border: Border.all(style: BorderStyle.solid,
                                               color: (selectedColor ==index)?Colors.white!:Colors.transparent
                                               ,width: 1)),)),
@@ -211,7 +223,7 @@ class _prodectdetialsState extends State<prodectdetials> {
                             child: ListView.builder(
                                 shrinkWrap: true,
                                 scrollDirection: Axis.horizontal,
-                                itemCount:widget.size,
+                                itemCount:1,
                                 itemBuilder:(context, index) {
                                   return  Padding(
                                     padding: const EdgeInsets.all(3.0),
@@ -224,7 +236,7 @@ class _prodectdetialsState extends State<prodectdetials> {
                                         child: Container(
 
                                           padding: const EdgeInsets.only(top: 12,right: 4,left: 4),
-                                          child: Text(widget.data.availableProperties[widget.sizeindex].values[index].value.toString(),textAlign: TextAlign.center,style: TextStyle(color:(selectsize ==index)?const Color(
+                                          child: Text(widget.data.variations[selectedColor].productPropertiesValues[widget.sizeindex].value.toString(),textAlign: TextAlign.center,style: TextStyle(color:(selectsize ==index)?const Color(
                                               0xff0c0c0c):const Color(
                                               0xffffffff),fontSize: 20,fontWeight: FontWeight.bold),),
                                           //width:75,

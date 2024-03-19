@@ -40,6 +40,7 @@ print('1');
   }
   void hasColor(List<AvailableProperty> dataList) {
     String color = "Color";
+    double doubl=0.0;
     String colornum='';
     for (int i=0;i<dataList.length;i++) {
       print('3');
@@ -50,7 +51,9 @@ print('1');
           if (dataList[i].property == color) {
             setState(() {
               hascolorr = true;
+            doubl=dataList[i].values.length/2;
             colorr=dataList[i].values.length;
+            print(colorr);
             colorindex=i;
             print(color);
               print('5');
