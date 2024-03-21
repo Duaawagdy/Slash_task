@@ -271,7 +271,9 @@ class _prodectdetialsState extends State<prodectdetials> {
                             child: ListView.builder(
                                 shrinkWrap: true,
                                 scrollDirection: Axis.horizontal,
-                                itemCount: 1,
+                                itemCount: widget.hascolor?1:widget.data
+                                    .availableProperties[widget
+                                    .sizeindex].values.length,
                                 itemBuilder: (context, index) {
                                   return Padding(
                                     padding: const EdgeInsets.all(3.0),
@@ -289,10 +291,12 @@ class _prodectdetialsState extends State<prodectdetials> {
 
                                           padding: const EdgeInsets.only(
                                               top: 12, right: 4, left: 4),
-                                          child: Text(widget.data
+                                          child: Text(widget.hascolor?widget.data
                                               .variations[selectedColor]
                                               .productPropertiesValues[widget
-                                              .sizeindex].value.toString(),
+                                              .sizeindex].value.toString():widget.data
+                                              .availableProperties[widget
+                                              .sizeindex].values[index].value.toString(),
                                             textAlign: TextAlign.center,
                                             style: TextStyle(
                                                 color: (selectsize == index)
